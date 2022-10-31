@@ -4,9 +4,10 @@ import {
   Route,
   Link,
   useMatch,
+  useNavigate,
 } from 'react-router-dom'
 
-const Menu = ({ anecdotes, addNew, anecdote }) => {
+const Menu = ({ anecdotes, addNew, anecdote, notification }) => {
   const padding = {
     paddingRight: 5
   }
@@ -16,6 +17,10 @@ const Menu = ({ anecdotes, addNew, anecdote }) => {
         <Link style={padding} to="/">anecdotes</Link>
         <Link style={padding} to="/create">create new</Link>
         <Link style={padding} to="/about">about</Link>
+      </div>
+
+      <div>
+        {notification}
       </div>
 
       <Routes>
@@ -134,10 +139,16 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+  const navigate = useNavigate();
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate("/")
+    setNotification(`a new anecdote '${anecdote.content}' created!`)
+    setTimeout(() => {
+      setNotification('')
+    }, 5000);
   }
 
   const anecdoteById = (id) =>
@@ -162,7 +173,11 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes} addNew={addNew} anecdote={anecdote} />
+      <Menu
+        anecdotes={anecdotes}
+        addNew={addNew}
+        anecdote={anecdote}
+        notification={notification} />
       <Footer />
     </div>
   )
