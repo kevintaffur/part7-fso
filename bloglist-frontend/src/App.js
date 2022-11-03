@@ -1,28 +1,29 @@
-import { useState, useEffect } from 'react';
-import Blog from './components/Blog';
-import blogService from './services/blogs';
-import loginService from './services/login';
-import NewBlogForm from './components/NewBlogForm';
-import LoginForm from './components/LoginForm';
-import Notification from './components/Notification';
-import Togglable from './components/Togglable';
+import { useState, useEffect } from "react";
+import Blog from "./components/Blog";
+import blogService from "./services/blogs";
+import loginService from "./services/login";
+import NewBlogForm from "./components/NewBlogForm";
+import LoginForm from "./components/LoginForm";
+import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
+import { useDispatch } from "react-redux";
+import { setNotification } from "./reducers/notificationReducer";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (user !== null) {
-      blogService.getAll().then(blogs => setBlogs(blogs));
+      blogService.getAll().then((blogs) => setBlogs(blogs));
     }
   }, [user]);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser');
+    const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       blogService.setToken(user.token);
@@ -35,50 +36,37 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password });
-      window.localStorage.setItem('loggedUser', JSON.stringify(user));
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
-      setUsername('');
-      setPassword('');
-      setMessage('Login successful');
-      setMessageType('success');
+      setUsername("");
+      setPassword("");
+      dispatch(setNotification("Login successful", "success", 5));
     } catch (exception) {
-      setMessage('Wrong credentials');
-      setMessageType('error');
-    } finally {
-      setTimeout(() => {
-        setMessage(null);
-        setMessageType(null);
-      }, 5000);
+      dispatch(setNotification("Wrong credentials", "error", 5));
     }
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedUser');
+    window.localStorage.removeItem("loggedUser");
     setUser(null);
     blogService.setToken(null);
-    setMessage('Logout successful');
-    setMessageType('success');
-    setTimeout(() => {
-      setMessage(null);
-      setMessageType(null);
-    }, 5000);
+    dispatch(setNotification("Logout successful", "success", 5));
   };
 
   const addBlog = async (newObject) => {
     try {
       const newBlog = await blogService.create(newObject);
       setBlogs(blogs.concat(newBlog));
-      setMessage(`A new blog "${newBlog.title}" by ${newBlog.author} added`);
-      setMessageType('success');
+      dispatch(
+        setNotification(
+          `A new blog "${newBlog.title}" by ${newBlog.author} added`,
+          "success",
+          5
+        )
+      );
     } catch (exception) {
-      setMessage('Error adding new blog');
-      setMessageType('error');
-    } finally {
-      setTimeout(() => {
-        setMessage(null);
-        setMessageType(null);
-      }, 5000);
+      dispatch(setNotification("Error adding new blog", "error", 5));
     }
   };
 
@@ -91,15 +79,9 @@ const App = () => {
 
     try {
       const updatedBlog = await blogService.update(changedBlog, id);
-      setBlogs(blogs.map((blog) => blog.id !== id ? blog : updatedBlog));
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)));
     } catch (exception) {
-      setMessage('Error updating blog');
-      setMessageType('error');
-    } finally {
-      setTimeout(() => {
-        setMessage(null);
-        setMessageType(null);
-      }, 5000);
+      dispatch(setNotification("Error updating blog", "error", 5));
     }
   };
 
@@ -108,16 +90,11 @@ const App = () => {
       try {
         await blogService.remove(id);
         setBlogs(blogs.filter((blog) => blog.id !== id));
-        setMessage(`Blog "${title}" by ${author} deleted`);
-        setMessageType('success');
+        dispatch(
+          setNotification(`Blog "${title}" by ${author} deleted`, "success", 5)
+        );
       } catch (exception) {
-        setMessage('Error deleting blog');
-        setMessageType('error');
-      } finally {
-        setTimeout(() => {
-          setMessage(null);
-          setMessageType(null);
-        }, 5000);
+        dispatch(setNotification("Error deleting blog", "error", 5));
       }
     }
   };
@@ -134,15 +111,8 @@ const App = () => {
 
   return (
     <div>
-      {user ? (
-        <h2>Blogs</h2>
-      ) : (
-        <h2>Log in to application</h2>
-      )}
-      <Notification
-        message={message}
-        type={messageType}
-      />
+      {user ? <h2>Blogs</h2> : <h2>Log in to application</h2>}
+      <Notification />
       {user ? (
         <>
           <div>
@@ -150,13 +120,11 @@ const App = () => {
           </div>
           <br />
           <Togglable buttonLabel="New blog">
-            <NewBlogForm
-              createBlog={addBlog}
-            />
+            <NewBlogForm createBlog={addBlog} />
           </Togglable>
           <br />
           <div className="blogs">
-            {blogs.sort(sortByLikes).map(blog =>
+            {blogs.sort(sortByLikes).map((blog) => (
               <Blog
                 key={blog.id}
                 blog={blog}
@@ -164,7 +132,7 @@ const App = () => {
                 deleteBlog={deleteBlog}
                 owner={user.username}
               />
-            )}
+            ))}
           </div>
         </>
       ) : (

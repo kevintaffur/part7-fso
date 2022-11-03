@@ -1,5 +1,5 @@
-import axios from 'axios';
-const baseUrl = '/api/blogs';
+import axios from "axios";
+const baseUrl = "/api/blogs";
 
 let token = null;
 
@@ -22,7 +22,11 @@ const create = async (newBlog) => {
 };
 
 const update = async (updatedObject, id) => {
-  const request = await axios.put(`${baseUrl}/${id}`, updatedObject, getConfig());
+  const request = await axios.put(
+    `${baseUrl}/${id}`,
+    updatedObject,
+    getConfig()
+  );
   return request.data;
 };
 

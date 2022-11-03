@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from "react";
+import PropTypes from "prop-types";
 
 const Togglable = ({ buttonLabel, children }) => {
   const [visible, setVisible] = useState(false);
-  const hideWhenVisible = { display: visible ? 'none' : '' };
-  const showWhenVisible = { display: visible ? '' : 'none' };
+  const hideWhenVisible = { display: visible ? "none" : "" };
+  const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleVisibility = () => {
     setVisible(!visible);
@@ -13,11 +13,15 @@ const Togglable = ({ buttonLabel, children }) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button id="create-blog" onClick={toggleVisibility}>{buttonLabel}</button>
+        <button id="create-blog" onClick={toggleVisibility}>
+          {buttonLabel}
+        </button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button id="cancel-create-blog" onClick={toggleVisibility}>cancel</button>
+        <button id="cancel-create-blog" onClick={toggleVisibility}>
+          cancel
+        </button>
       </div>
     </div>
   );
