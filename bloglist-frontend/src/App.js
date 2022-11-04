@@ -12,7 +12,7 @@ import {
 import { resetUser, setUser } from "./reducers/userReducer";
 import { initializeUsers } from "./reducers/usersReducer";
 import UserList from "./components/UserList";
-import { Route, Routes, useMatch } from "react-router-dom";
+import { Link, Route, Routes, useMatch } from "react-router-dom";
 import BlogList from "./components/BlogList";
 import UserPosts from "./components/UserPosts";
 import Blog from "./components/Blog";
@@ -97,8 +97,27 @@ const App = () => {
     ? blogs.find((blog) => blog.id === matchBlog.params.id)
     : null;
 
+  const padding = {
+    paddingRight: 5,
+  };
+
   return (
     <div>
+      <div>
+        <Link style={padding} to="/">
+          Blogs
+        </Link>
+        <Link style={padding} to="/users">
+          Users
+        </Link>
+        {user ? (
+          <>
+            {user.name} logged in <button onClick={handleLogout}>logout</button>
+          </>
+        ) : (
+          <></>
+        )}
+      </div>
       {user ? <h2>Blogs</h2> : <h2>Log in to application</h2>}
       <Notification />
       {user ? (
