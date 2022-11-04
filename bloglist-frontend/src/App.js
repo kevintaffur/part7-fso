@@ -12,8 +12,9 @@ import {
 import { resetUser, setUser } from "./reducers/userReducer";
 import { initializeUsers } from "./reducers/usersReducer";
 import UserList from "./components/UserList";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useMatch } from "react-router-dom";
 import BlogList from "./components/BlogList";
+import UserPosts from "./components/UserPosts";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -85,6 +86,11 @@ const App = () => {
     }
   };
 
+  const match = useMatch("/users/:id");
+  const matchUser = match
+    ? users.find((user) => user.id === match.params.id)
+    : null;
+
   return (
     <div>
       {user ? <h2>Blogs</h2> : <h2>Log in to application</h2>}
@@ -109,6 +115,7 @@ const App = () => {
                 />
               }
             />
+            <Route path="/users/:id" element={<UserPosts user={matchUser} />} />
           </Routes>
         </>
       ) : (
