@@ -1,3 +1,4 @@
+import { ListGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const UserPosts = ({ user }) => {
@@ -8,13 +9,13 @@ const UserPosts = ({ user }) => {
     <div>
       <h2>{user.name}</h2>
       <h3>Added blogs</h3>
-      <ul>
+      <ListGroup>
         {user.blogs.map((blog) => (
-          <li key={blog.id}>
+          <ListGroup.Item key={blog.id}>
             <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </li>
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </div>
   );
 };

@@ -1,9 +1,10 @@
+import { Table } from "react-bootstrap";
 import User from "./User";
 
 const UserList = ({ users }) => (
   <>
     <h2>Users</h2>
-    <table>
+    <Table striped bordered hover>
       <tbody>
         <tr>
           <th></th>
@@ -13,7 +14,7 @@ const UserList = ({ users }) => (
           <User key={user.id} user={user} />
         ))}
       </tbody>
-    </table>
+    </Table>
   </>
 );
 

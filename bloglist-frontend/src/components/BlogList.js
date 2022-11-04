@@ -1,3 +1,4 @@
+import { ListGroup } from "react-bootstrap";
 import Blog from "./Blog";
 import NewBlogForm from "./NewBlogForm";
 import Togglable from "./Togglable";
@@ -19,17 +20,20 @@ const BlogList = ({ blogs, user, handleDelete, handleLike }) => {
         <NewBlogForm />
       </Togglable>
       <br />
-      <div className="blogs">
-        {blogs.sort(sortByLikes).map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={handleLike}
-            deleteBlog={handleDelete}
-            owner={user.username}
-            show="line"
-          />
-        ))}
+      <div className="container">
+        <ListGroup>
+          {blogs.sort(sortByLikes).map((blog) => (
+            <ListGroup.Item key={blog.id}>
+              <Blog
+                blog={blog}
+                handleLike={handleLike}
+                deleteBlog={handleDelete}
+                owner={user.username}
+                show="line"
+              />
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       </div>
     </>
   );

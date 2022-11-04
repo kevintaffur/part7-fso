@@ -12,10 +12,11 @@ import {
 import { resetUser, setUser } from "./reducers/userReducer";
 import { initializeUsers } from "./reducers/usersReducer";
 import UserList from "./components/UserList";
-import { Link, Route, Routes, useMatch } from "react-router-dom";
+import { Link, Route, Routes, useMatch, useNavigate } from "react-router-dom";
 import BlogList from "./components/BlogList";
 import UserPosts from "./components/UserPosts";
 import Blog from "./components/Blog";
+import { Button, Container, Nav, Navbar } from "react-bootstrap";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -24,6 +25,7 @@ const App = () => {
   const blogs = [...useSelector((state) => state.blogs)];
   const user = useSelector((state) => state.user);
   const users = useSelector((state) => state.users);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user !== null) {
@@ -50,7 +52,7 @@ const App = () => {
       setPassword("");
       dispatch(setNotification("Login successful", "success", 5));
     } catch (exception) {
-      dispatch(setNotification("Wrong credentials", "error", 5));
+      dispatch(setNotification("Wrong credentials", "danger", 5));
     }
   };
 
@@ -81,6 +83,7 @@ const App = () => {
         dispatch(
           setNotification(`Blog "${title}" by ${author} deleted`, "success", 5)
         );
+        navigate("/");
       } catch (exception) {
         dispatch(setNotification("Error deleting blog", "error", 5));
       }
@@ -98,35 +101,40 @@ const App = () => {
     : null;
 
   const padding = {
-    paddingRight: 5,
+    paddingRight: 20,
   };
 
   return (
-    <div>
-      <div>
-        <Link style={padding} to="/">
-          Blogs
-        </Link>
-        <Link style={padding} to="/users">
-          Users
-        </Link>
-        {user ? (
-          <>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </>
-        ) : (
-          <></>
-        )}
-      </div>
+    <div className="container">
+      <Navbar bg="light" variant="light">
+        <Container>
+          <Navbar.Brand>
+            <Link to="/">Blogs</Link>
+          </Navbar.Brand>
+          <Nav>
+            <Link style={padding} to="/users">
+              Users
+            </Link>
+            <div>
+              {user ? (
+                <>
+                  {user.name} logged in{" "}
+                  <Button variant="primary" size="sm" onClick={handleLogout}>
+                    logout
+                  </Button>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+          </Nav>
+        </Container>
+      </Navbar>
+
       {user ? <h2>Blogs</h2> : <h2>Log in to application</h2>}
       <Notification />
       {user ? (
         <>
-          <div>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </div>
-          <br />
-
           <Routes>
             <Route path="/users" element={<UserList users={users} />} />
             <Route
@@ -151,7 +159,7 @@ const App = () => {
                   blog={matchedBlog}
                   handleLike={handleLike}
                   deleteBlog={handleDelete}
-                  owner={user}
+                  owner={user.username}
                 />
               }
             />

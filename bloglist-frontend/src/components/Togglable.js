@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { Button } from "react-bootstrap";
 
 const Togglable = ({ buttonLabel, children }) => {
   const [visible, setVisible] = useState(false);
@@ -13,15 +14,19 @@ const Togglable = ({ buttonLabel, children }) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button id="create-blog" onClick={toggleVisibility}>
+        <Button variant="primary" id="create-blog" onClick={toggleVisibility}>
           {buttonLabel}
-        </button>
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button id="cancel-create-blog" onClick={toggleVisibility}>
-          cancel
-        </button>
+        <Button
+          variant="secondary"
+          id="cancel-create-blog"
+          onClick={toggleVisibility}
+        >
+          Cancel
+        </Button>
       </div>
     </div>
   );

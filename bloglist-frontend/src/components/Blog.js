@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Form, ListGroup } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { commentBlog } from "../reducers/blogReducer";
@@ -21,7 +22,7 @@ const Blog = ({ blog, handleLike, deleteBlog, owner, show }) => {
 
   if (show === "line") {
     return (
-      <div className="blog">
+      <div>
         <Link to={`/blogs/${blog.id}`}>
           {blog.title} {blog.author}
         </Link>
@@ -40,36 +41,50 @@ const Blog = ({ blog, handleLike, deleteBlog, owner, show }) => {
   };
 
   return (
-    <div className="blog">
+    <div className="container">
       <h2>{blog.title}</h2>
       <div>{blog.url}</div>
       <div>
         {blog.likes} likes{" "}
-        <button className="like-button" onClick={() => handleLike(blog.id)}>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="like-button"
+          onClick={() => handleLike(blog.id)}
+        >
           like
-        </button>
+        </Button>
       </div>
-      <div>added by {blog.author}</div>
+      <div>added by {blog.user.name}</div>
       {addedByUser() && (
         <div>
-          <button onClick={removeBlog}>remove</button>
+          <Button variant="danger" size="sm" onClick={removeBlog}>
+            remove
+          </Button>
         </div>
       )}
       <h3>Comments</h3>
-      <form onSubmit={handleComment}>
-        <input
-          type="text"
-          value={comment}
-          placeholder="Comment"
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
+      <Form onSubmit={handleComment}>
+        <Form.Group>
+          <Form.Control
+            type="text"
+            value={comment}
+            placeholder="Comment"
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <Button variant="primary" size="sm" type="submit">
+            add comment
+          </Button>
+        </Form.Group>
+      </Form>
+      <br />
+      <ListGroup>
         {blog.comments.map((comment) => (
-          <li key={`${comment}${randomNumber()}`}>{comment}</li>
+          <ListGroup.Item key={`${comment}${randomNumber()}`}>
+            {comment}
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </div>
   );
 };
