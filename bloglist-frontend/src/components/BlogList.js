@@ -27,6 +27,7 @@ const BlogList = ({ blogs, user, handleDelete, handleLike }) => {
             handleLike={handleLike}
             deleteBlog={handleDelete}
             owner={user.username}
+            show="line"
           />
         ))}
       </div>

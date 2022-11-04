@@ -15,6 +15,7 @@ import UserList from "./components/UserList";
 import { Route, Routes, useMatch } from "react-router-dom";
 import BlogList from "./components/BlogList";
 import UserPosts from "./components/UserPosts";
+import Blog from "./components/Blog";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -86,9 +87,14 @@ const App = () => {
     }
   };
 
-  const match = useMatch("/users/:id");
-  const matchUser = match
-    ? users.find((user) => user.id === match.params.id)
+  const matchUser = useMatch("/users/:id");
+  const matchedUser = matchUser
+    ? users.find((user) => user.id === matchUser.params.id)
+    : null;
+
+  const matchBlog = useMatch("/blogs/:id");
+  const matchedBlog = matchBlog
+    ? blogs.find((blog) => blog.id === matchBlog.params.id)
     : null;
 
   return (
@@ -115,7 +121,21 @@ const App = () => {
                 />
               }
             />
-            <Route path="/users/:id" element={<UserPosts user={matchUser} />} />
+            <Route
+              path="/users/:id"
+              element={<UserPosts user={matchedUser} show="info" />}
+            />
+            <Route
+              path="/blogs/:id"
+              element={
+                <Blog
+                  blog={matchedBlog}
+                  handleLike={handleLike}
+                  deleteBlog={handleDelete}
+                  owner={user}
+                />
+              }
+            />
           </Routes>
         </>
       ) : (
