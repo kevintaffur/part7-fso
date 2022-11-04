@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
-import blogService from "./services/blogs";
 import loginService from "./services/login";
 import NewBlogForm from "./components/NewBlogForm";
 import LoginForm from "./components/LoginForm";
@@ -13,13 +12,14 @@ import {
   initializeBlogs,
   updateBlog,
 } from "./reducers/blogReducer";
+import { resetUser, setUser } from "./reducers/userReducer";
 
 const App = () => {
-  const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const blogs = [...useSelector((state) => state.blogs)];
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     if (user !== null) {
@@ -30,9 +30,7 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      blogService.setToken(user.token);
-      setUser(user);
+      dispatch(setUser(JSON.parse(loggedUserJSON)));
     }
   }, []);
 
@@ -42,8 +40,7 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password });
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
+      dispatch(setUser(user));
       setUsername("");
       setPassword("");
       dispatch(setNotification("Login successful", "success", 5));
@@ -54,8 +51,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
-    setUser(null);
-    blogService.setToken(null);
+    dispatch(resetUser());
     dispatch(setNotification("Logout successful", "success", 5));
   };
 
