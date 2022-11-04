@@ -23,6 +23,10 @@ const Blog = ({ blog, handleLike, deleteBlog, owner, show }) => {
     );
   }
 
+  const randomNumber = () => {
+    return Math.floor(Math.random() * 100000000);
+  };
+
   return (
     <div className="blog">
       <h2>{blog.title}</h2>
@@ -39,6 +43,12 @@ const Blog = ({ blog, handleLike, deleteBlog, owner, show }) => {
           <button onClick={removeBlog}>remove</button>
         </div>
       )}
+      <h3>Comments</h3>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={`${comment}${randomNumber()}`}>{comment}</li>
+        ))}
+      </ul>
     </div>
   );
 };
