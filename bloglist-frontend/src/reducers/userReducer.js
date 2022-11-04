@@ -4,7 +4,7 @@ import blogService from "../services/blogs";
 const initialState = null;
 
 const userSlice = createSlice({
-  name: "name",
+  name: "user",
   initialState,
   reducers: {
     addUser(state, action) {

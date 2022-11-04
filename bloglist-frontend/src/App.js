@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
 import loginService from "./services/login";
-import NewBlogForm from "./components/NewBlogForm";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer";
 import {
@@ -13,6 +10,10 @@ import {
   updateBlog,
 } from "./reducers/blogReducer";
 import { resetUser, setUser } from "./reducers/userReducer";
+import { initializeUsers } from "./reducers/usersReducer";
+import UserList from "./components/UserList";
+import { Route, Routes } from "react-router-dom";
+import BlogList from "./components/BlogList";
 
 const App = () => {
   const [username, setUsername] = useState("");
@@ -20,10 +21,12 @@ const App = () => {
   const dispatch = useDispatch();
   const blogs = [...useSelector((state) => state.blogs)];
   const user = useSelector((state) => state.user);
+  const users = useSelector((state) => state.users);
 
   useEffect(() => {
     if (user !== null) {
       dispatch(initializeBlogs());
+      dispatch(initializeUsers());
     }
   }, [user]);
 
@@ -82,16 +85,6 @@ const App = () => {
     }
   };
 
-  const sortByLikes = (blog1, blog2) => {
-    if (blog1.likes > blog2.likes) {
-      return -1;
-    }
-    if (blog1.likes < blog2.likes) {
-      return 1;
-    }
-    return 0;
-  };
-
   return (
     <div>
       {user ? <h2>Blogs</h2> : <h2>Log in to application</h2>}
@@ -102,21 +95,21 @@ const App = () => {
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </div>
           <br />
-          <Togglable buttonLabel="New blog">
-            <NewBlogForm />
-          </Togglable>
-          <br />
-          <div className="blogs">
-            {blogs.sort(sortByLikes).map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleLike={handleLike}
-                deleteBlog={handleDelete}
-                owner={user.username}
-              />
-            ))}
-          </div>
+
+          <Routes>
+            <Route path="/users" element={<UserList users={users} />} />
+            <Route
+              path="/"
+              element={
+                <BlogList
+                  blogs={blogs}
+                  user={user}
+                  handleDelete={handleDelete}
+                  handleLike={handleLike}
+                />
+              }
+            />
+          </Routes>
         </>
       ) : (
         <LoginForm
