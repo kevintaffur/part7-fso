@@ -26,6 +26,15 @@ const blogSlice = createSlice({
         return blog.id !== id;
       });
     },
+    addComment(state, action) {
+      const { id, comment } = action.payload;
+      const blog = state.find((blog) => blog.id === id);
+      const commentedBlog = {
+        ...blog,
+        comments: [...blog.comments, comment],
+      };
+      return state.map((blog) => (blog.id === id ? commentedBlog : blog));
+    },
   },
 });
 
@@ -58,7 +67,14 @@ export const deleteBlog = (id) => {
   };
 };
 
-export const { setBlogs, appendBlog, changeBlog, removeBlog } =
+export const commentBlog = (id, comment) => {
+  return async (dispatch) => {
+    await blogService.comment(id, comment);
+    dispatch(addComment({ id, comment }));
+  };
+};
+
+export const { setBlogs, appendBlog, changeBlog, removeBlog, addComment } =
   blogSlice.actions;
 
 export default blogSlice.reducer;
